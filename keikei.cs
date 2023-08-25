@@ -204,7 +204,6 @@ trans=transformdata;
 
 
 }
-
 public static void posing(string posename){
     float time;
 
@@ -214,7 +213,7 @@ time= playeranim.GetCurrentAnimatorStateInfo(0).length;
 atractcamera(time,player.gameObject.transform,10);
 while (time>0)
 {
-    lookatcamera.lookcamera(player);
+   
         time-=Time.deltaTime; 
 }
 }

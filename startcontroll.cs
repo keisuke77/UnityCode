@@ -9,17 +9,16 @@ public class startcontroll : MonoBehaviour
    public navchaise navchaise;
    public enemyhp enemyhp;
    public NavMeshAgent agent;
-   public navmeshonoff navmeshonoff;
+  
 
     
     private void Awake()
     {
         
-navmeshonoff=GetComponent<navmeshonoff>();
         navchaise=GetComponent<navchaise>();
         enemyhp=GetComponent<enemyhp>();
         agent=GetComponent<NavMeshAgent>();
-        navmeshonoff.enabled=false;
+        
 agent.enabled=false;
 enemyhp.enabled=false;
 navchaise.enabled=false;
@@ -30,7 +29,6 @@ navchaise.enabled=false;
         
     }
 public void setstart(){
-navmeshonoff.enabled=true;
 agent.enabled=true;
 enemyhp.enabled=true;
 navchaise.enabled=true;

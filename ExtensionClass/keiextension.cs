@@ -54,15 +54,6 @@ public class damagevalue
 }
 
 
-public enum bodypart
-{
-    no,
-    righthand,
-    lefthand,
-    rightfoot,
-    leftfoot,
-    weapons
-}
 
 public enum direction
 {
