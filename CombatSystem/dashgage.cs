@@ -17,7 +17,8 @@ public class dashgage : MonoBehaviour
 
     public float decreaseTime = 10f;
     private float tempSpeed;
-    private bool isDashing;
+    [HideInInspector]
+    public bool isDashing;
     private bool isTired;
 public bool FullVanish;
     private void Start()

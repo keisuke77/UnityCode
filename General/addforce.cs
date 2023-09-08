@@ -23,7 +23,10 @@ public class addforce : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
     }
-
+public void AddForce(Rigidbody rbs){
+    rb=rbs;
+    AddForce();
+}
     public void AddForce()
     {
         if (forwardforce)

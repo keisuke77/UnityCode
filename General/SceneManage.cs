@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -5,6 +6,9 @@ public class SceneManage : MonoBehaviour
 { //必須クラス
     public string beforeScene;
 public static SceneManage Instance;
+
+public System.Action ReloadSceneAction;
+
     public void Awake()
     {
 
@@ -13,6 +17,22 @@ public static SceneManage Instance;
         transform.parent = null;
        
     }
+void OnEnable()
+{
+    SceneManager.sceneLoaded += OnSceneLoaded;
+}
+
+void OnDisable()
+{
+    SceneManager.sceneLoaded -= OnSceneLoaded;
+}
+
+private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+{
+    // ここにシーンがロードされたときの処理を書く
+    ReloadSceneAction();
+}
+
 
     public void ReloadScene()
     {

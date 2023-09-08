@@ -24,6 +24,8 @@ public class keiinput : Singleton<keiinput>
     public bool hissatu;
     public bool decide;
 
+    public bool MouseDuring;
+
     public bool guard;
     public bool guardup;
     public Button attackbutton;
@@ -214,12 +216,28 @@ public class keiinput : Singleton<keiinput>
             default:
                 return 0;
         }
-    } public bool GetKey(controll input)
+    }
+    
+    public bool GetKeys(List<controll> input)
+    {foreach (var item in input)
+    {
+        if(GetKey(item)){
+            return true;        }
+       
+    }return false;
+      
+     }
+     public bool MouseDown,MouseUp;
+      public bool GetKey(controll input)
     {
         switch (input)
         {
             case controll.attackkey:
                 return attack; 
+                case controll.mouseDown:
+                return MouseDown; 
+                case controll.mouseUp:
+                return MouseUp; 
                 case controll.none:
                 return false;
             case controll.dashkey:
@@ -270,8 +288,16 @@ public class keiinput : Singleton<keiinput>
         }
      
             }
+MouseDown=Input.GetMouseButtonDown(0);
+MouseUp=Input.GetMouseButtonUp(0);
+if (MouseDown)
+{
 
-
+  MouseDuring=true;
+}else if (MouseUp)
+{
+  MouseDuring=false;
+}
                  
         if (dash)
         {

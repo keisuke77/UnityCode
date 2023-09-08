@@ -265,13 +265,37 @@ btn.onClick.AddListener(()=>ac());
         return default(T2);
     }
 
-    public static bool keydown(this KeyCode KeyCode)
+  public static bool keydown(this KeyCode keyCode)
+{
+    switch (keyCode)
     {
-        return Input.GetKeyDown(KeyCode);
+        case KeyCode.Mouse0:
+            if (Input.GetMouseButtonDown(0))
+            {
+                return true;
+            }else
+            {
+                 return false;
+            }
+           
+        case KeyCode.Mouse1:
+            return Input.GetMouseButtonDown(1); 
+             case KeyCode.Mouse2:
+            return Input.GetMouseButtonDown(2);
+        // 追加したい他のマウスボタンや特別なキーコードの場合をここに追加
+        default:
+            return Input.GetKeyDown(keyCode);
     }
-
+}
     public static bool keyup(this KeyCode KeyCode)
-    {
+    { if (KeyCode==KeyCode.Mouse0)
+        {
+            return Input.GetMouseButtonUp(0);
+        }
+        if (KeyCode==KeyCode.Mouse1)
+        {
+            return Input.GetMouseButtonUp(1);
+        }
         return Input.GetKeyUp(KeyCode);
     }
 

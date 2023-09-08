@@ -264,8 +264,9 @@ public void Reload(){
         { 
           GetComponent<attackcore>().basedamagevalue=currentcharactor.ChatCharactor.Power;
           GetComponent<attackcore>().baseforcepower=currentcharactor.ChatCharactor.knockBack;    
+        }  if (GetComponent<Jump>()!=null)
+        { GetComponent<Jump>().DefaultJumpSpeed=currentcharactor.ChatCharactor.JumpPower;
         }
-          
 
         },Delay);
      try

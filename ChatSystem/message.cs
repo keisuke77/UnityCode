@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+
+using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using DG.Tweening;
@@ -39,9 +41,7 @@ public class message : MonoBehaviour
     public CanvasGroup canvasGroup;
 
     //　マウスクリックを促すアイコン
-
-    public eventKeyImage eventKeyImage;
-
+    public List<controll> controlls; 
     string[] mes;
     public int mesNum = 0;
     [Button( "Test", "実行")]
@@ -126,15 +126,7 @@ ac();
     }
 public bool StopUodate;
     //画面とかタップされたらよばれる関数
-private void OnMouseEnter() {
-   
-  
-  if (isMessageing)
-    {
-         OnDown();
-    }
-    
-}
+
 
     public void OnDown()
     {
@@ -166,10 +158,10 @@ private void OnMouseEnter() {
         }
     }
     private void Update() {
-        if (eventKeyImage.key.keydown())
+          if (isMessageing){
+        if (keiinput.Instance.GetKeys(controlls))
         {
-             if (isMessageing)
-                            {
+           
                                  OnDown();
                             }
         }
@@ -189,20 +181,7 @@ private void OnMouseEnter() {
 
     }
 bool switchs;
-    public void Key(){
-        
-         if (eventKeyImage != null)
-                        {    
-                            StartCoroutine(eventKeyImage.SetUp(()=>{
-                            if (isMessageing)
-                            {
-                                 OnDown();
-                            }
-                           
-                           }
-                           ));
-                        }
-    }
+ 
 public bool isMessageing=false;
     public void finish()
     {   isMessageing=false;

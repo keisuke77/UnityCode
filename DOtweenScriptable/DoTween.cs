@@ -16,7 +16,12 @@ public class DoTween : MonoBehaviour
     {
       seq= DoTweenSeri.Play(transform);
     }  
-   
+   private void Awake() {
+        if (enablePlay)
+   {Play();
+      
+   }
+   }
 private void OnEnable() {
    if (enablePlay)
    {Play();

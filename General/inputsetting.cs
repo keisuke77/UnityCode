@@ -37,5 +37,5 @@ public enum controll
     throwkey,
     addkey,
     downkey,hissatukey,
-    decidekey,horizonaxis,rotateverticalaxis,verticalaxis,rotatehorizonaxis
+    decidekey,horizonaxis,rotateverticalaxis,verticalaxis,rotatehorizonaxis,mouseDown,mouseUp
 }

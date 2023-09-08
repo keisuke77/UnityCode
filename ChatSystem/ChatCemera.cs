@@ -14,7 +14,10 @@ public class ChatCamera {
  public UnityEvent unityEvent;
 
  public void Execute(System.Action ac=null){
-  
+     if (unityEvent!=null)
+                {
+                     unityEvent.Invoke();
+                }
    if (CutCamera)
    {
     CutCamera.enabled=true;
@@ -26,10 +29,7 @@ public class ChatCamera {
                    if (ac!=null)
              {
                 ac();
-                if (unityEvent!=null)
-                {
-                     unityEvent.Invoke();
-                }
+             
                
              }
             });  if ( CameraManager.instance!=null)

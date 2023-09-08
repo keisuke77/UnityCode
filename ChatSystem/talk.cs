@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using DG.Tweening;
+using UnityEngine.Experimental.XR.Interaction;
 
 public class talk : MonoBehaviour
 {
@@ -15,11 +16,11 @@ public ChatCameras ChatCameras;
 
     [Button( "TalkEvent", "実行")]
 public int a;
-
+public Quaternion DefaultRotation;
        
     // Start is called before the first frame update
     void Start()
-    {
+    {DefaultRotation=transform.rotation;
       IconGenerate.SetUp(gameObject);
         Exit();
     }
@@ -51,11 +52,12 @@ TalkEvent();
        
                 temp.Restart();
                 Talker.root().GetComponent<AnimBoolSet>().Stop = false; 
-                
+               transform.DORotate(DefaultRotation.eulerAngles, 1);
+      
         };
 
         ChatCameras.Execute(0);
-        Exit();
+        Exit(false);
     }
 
     void OnTriggerEnter(Collider collisionInfo)
@@ -77,8 +79,14 @@ TalkEvent();
         }
     }
 
-    public void Exit()
-    {IconGenerate.Off();
+    public void Exit(bool OriRotate=true)
+    {   if (OriRotate)
+    {
+          transform.DORotate(DefaultRotation.eulerAngles, 1);
+     
+    } 
+        
+        IconGenerate.Off();
         Talker = null;
            if (button != null)
         {
@@ -92,15 +100,16 @@ TalkEvent();
         if (collisionInfo.gameObject.proottag())
         {
             Exit();
+
         }
     }
-
+public controll controll;
     // Update is called once per frame
     void Update()
     {
         if (Talker != null)
         {
-            if (keiinput.Instance.interaction)
+            if (keiinput.Instance.GetKey(controll))
             {
                 TalkEvent();
             }

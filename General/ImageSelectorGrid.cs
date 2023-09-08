@@ -56,8 +56,6 @@ public controll Yaxis;
 public float SequenceInterval=0.5f;
 public bool Stop;
 public Vector2 dir;
-[Header("この閾値未満の角度差の場合、距離が短いものを選択します")]
- public float angleThreshold = 15f; // 
     
     private void Update()
     {
@@ -86,57 +84,47 @@ public Vector2 dir;
              }
     }
 
-    private void FindClosestImage(Vector2 input)
+ public float alpha = 1.0f; // 角度のウェイト
+public float beta = 0.1f; // 距離のウェイト
+
+private void FindClosestImage(Vector2 input)
+{
+    ImageEventPair currentPair = imageEventPairs[selectedIndex];
+    Vector3 direction = new Vector3(input.x, input.y, 0);
+    ImageEventPair closestPair = null;
+    float bestScore = Mathf.Infinity; // 最も低いスコアを持つペアを見つけるための変数
+
+    foreach (ImageEventPair pair in imageEventPairs)
     {
-        ImageEventPair currentPair = imageEventPairs[selectedIndex];
-        Vector3 direction = new Vector3(input.x, input.y, 0);
-        float closestDist = Mathf.Infinity;
-        ImageEventPair closestPair = null;
-        float smallestAngle = Mathf.Infinity;  // 追加: 最小角度のトラッキングのための変数
+        if (pair == currentPair)
+            continue;
 
-        foreach (ImageEventPair pair in imageEventPairs)
+        Vector3 toOther = pair.image.transform.position - currentPair.image.transform.position;
+        float dist = toOther.magnitude;
+        float angle = Vector3.Angle(direction, toOther);
+
+        if (angle < SelectableAngle)
         {
-            if (pair == currentPair)
-                continue;
+            float score = alpha * angle + beta * dist; // スコアリング関数
 
-            Vector3 toOther = pair.image.transform.position - currentPair.image.transform.position;
-            float angle = Vector3.Angle(direction, toOther);
-
-            if (angle < SelectableAngle)
+            if (score < bestScore)
             {
-                float dist = toOther.magnitude;
-
-                // 以下の条件は、角度差がangleThreshold未満の場合、距離が最も短いものを選択します。
-                // そうでない場合、角度差が最小のものを選択します。
-                if (angle < angleThreshold && dist < closestDist)
-                {
-                    closestDist = dist;
-                    closestPair = pair;
-                }
-                else if (angle < smallestAngle)
-                {
-                    smallestAngle = angle;
-                    closestPair = pair;
-                }
-            }
-        }
-
-        if (closestPair != null)
-        {
-            selectedIndex = imageEventPairs.IndexOf(closestPair);
-        }
-        else if (enableWrap)
-        {
-            if (input.y > 0 || input.x > 0)
-            {
-                selectedIndex = 0;
-            }
-            else
-            {
-                selectedIndex = imageEventPairs.Count - 1;
+                bestScore = score;
+                closestPair = pair;
             }
         }
     }
+
+    if (closestPair != null)
+    {
+        selectedIndex = imageEventPairs.IndexOf(closestPair);
+    }
+    else if (enableWrap)
+    {
+        selectedIndex = (input.y > 0 || input.x > 0) ? 0 : imageEventPairs.Count - 1;
+    }
+}
+
     private void SelectImage(int index)
     {
         var imagePair = imageEventPairs[index];
