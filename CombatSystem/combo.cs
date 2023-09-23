@@ -112,7 +112,7 @@ bool IsCooldownOver()
   void ProgressCombo()
 {
            // ダメージを受けた場合
-        if (hpcore.cooldown||animator.GetCurrentAnimatorStateInfo(0).IsTag("Damage")||animator.GetBool("damage"))
+        if (hpcore.cooldown||animator.GetCurrentAnimatorStateInfo(0).IsTag("Damage"))
         {
             comboCount = 0; // コンボをリセット
             lastDamageTime = Time.time; // ダメージを受けた時間を更新

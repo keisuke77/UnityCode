@@ -251,14 +251,8 @@ public static void colliderset(GameObject obj){
 
 
 public static Tween delaycall(System.Action action,float delay){
-  if (delay==0)
-  {
-    action(); return null;
-  }else
-  {
-    
-return  DOVirtual.DelayedCall(delay, () => action(),false);
-  }
+ 
+return DOVirtual.DelayedCall(delay, () => action(),false);
 }
 
 

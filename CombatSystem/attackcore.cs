@@ -189,7 +189,6 @@ public void SetBodyPartCurrent(bodypart bodypart){
     }
 
     public bool attackon(
-        GameObject attacker,
         GameObject attackedObj,
        DamageInfo damageInfos
     )
@@ -203,7 +202,7 @@ public void SetBodyPartCurrent(bodypart bodypart){
        damageInfo.forceValue += baseforcepower;
        if (overrideTag)damageInfo.attackableTag=AttackableTag;
        
-        var damadable = attackedObj.Damage(damageInfo,crit,attacker);
+        var damadable = attackedObj.Damage(damageInfo,crit,gameObject);
 
         if (damadable && attackedObj.GetComponent<Animator>() != null)
         {

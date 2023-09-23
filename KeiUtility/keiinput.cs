@@ -24,7 +24,7 @@ public class keiinput : MonoBehaviour
     public bool hissatu;
     public bool decide;
 
-    public bool MouseDuring,MouseDuring2;
+    public bool MouseDuring;
 
     public bool guard;
     public bool guardup;
@@ -245,7 +245,6 @@ private static keiinput instance;
       
      }
      public bool MouseDown,MouseUp;
-   public bool MouseDown2,MouseUp2;
       public bool GetKey(controll input)
     {
         switch (input)
@@ -253,19 +252,9 @@ private static keiinput instance;
             case controll.attackkey:
                 return attack; 
                 case controll.mouseDown:
-                return MouseDown;    
-                case controll.mouseDuring:
-                return MouseDuring;   
+                return MouseDown; 
                 case controll.mouseUp:
                 return MouseUp; 
-   case controll.mouseDown2:
-                return MouseDown2; 
-                case controll.mouseUp2:
-                return MouseUp2; 
-                 case controll.mouseDuring2:
-                return MouseDuring2; 
-
-                
                 case controll.none:
                 return false;
             case controll.dashkey:
@@ -319,8 +308,6 @@ private static keiinput instance;
             }
 MouseDown=Input.GetMouseButtonDown(0);
 MouseUp=Input.GetMouseButtonUp(0);
-MouseDown2=Input.GetMouseButtonDown(1);
-MouseUp2=Input.GetMouseButtonUp(1);
 if (MouseDown)
 {
 
@@ -328,13 +315,6 @@ if (MouseDown)
 }else if (MouseUp)
 {
   MouseDuring=false;
-}if (MouseDown2)
-{
-
-  MouseDuring2=true;
-}else if (MouseUp2)
-{
-  MouseDuring2=false;
 }
                  
         if (dash)

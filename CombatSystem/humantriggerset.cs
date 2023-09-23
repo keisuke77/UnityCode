@@ -49,7 +49,7 @@ public void attackerChange(AttackPram newAttackParams)
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {  
-    var attackcore=animator.GetComponent<attackcore>();  
+        var attackcore=animator.GetComponent<attackcore>();  
     attackcore.allofftriger();
     }
 

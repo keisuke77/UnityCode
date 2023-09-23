@@ -9,7 +9,7 @@ public class PlayerControll : MonoBehaviour, IMove
     [SerializeField]
     private Animator anim;
     Quaternion targetRotation;
-      Camera cam;
+    Camera cam;
     public bool isTransformMove;
 [Range(0,10)]    public float TransformSpeed=1;
    

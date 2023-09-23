@@ -10,11 +10,11 @@ public class eventkeys : MonoBehaviour
 [System.Serializable] 
 public class eventKey {
     
- public KeyCode key;
+public KeyCode key;
 public UnityEvent eve;
 
 public controll controll;
-public bool Up; 
+public bool Up;
 }public List<eventKey> eventKeys;
     void Update()
     {
