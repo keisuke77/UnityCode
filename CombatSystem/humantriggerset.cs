@@ -82,7 +82,7 @@ public void attackerChange(AttackPram newAttackParams)
         }
         else
         {
-        attackcore.CurrentAttackPart.damageInfo = damageInfo;
+           attackcore.CurrentAttackPart.damageInfo = damageInfo;
             
         }
 
