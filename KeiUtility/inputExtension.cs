@@ -52,14 +52,8 @@ public static class inputExtension
     switch (keyCode)
     {
         case KeyCode.Mouse0:
-            if (Input.GetMouseButtonDown(0))
-            {
-                return true;
-            }else
-            {
-                 return false;
-            }
-           
+           return Input.GetMouseButtonDown(0);
+          
         case KeyCode.Mouse1:
             return Input.GetMouseButtonDown(1); 
              case KeyCode.Mouse2:
@@ -69,7 +63,7 @@ public static class inputExtension
             return Input.GetKeyDown(keyCode);
     }
 }
-    public static bool keyup(this KeyCode KeyCode)
+      public static bool keyup(this KeyCode KeyCode)
     { if (KeyCode==KeyCode.Mouse0)
         {
             return Input.GetMouseButtonUp(0);

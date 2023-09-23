@@ -9,27 +9,15 @@ public class HissatuWaza {
    public float mpUseAmount;
     public mp mp;
   
+  public DelayEvent delayEvent;
 }
-public class HissatuWazaManger : MonoBehaviour {
+public class HissatuWazaManger : SelectBehabior<HissatuWaza> {
     
     public Animator anim;
-    public controll WazaKey;
-    public KeyCode AddKey;
-    public KeyCode DownKey;
+   
+public override void ChangeCallBack(){
 
-public List<HissatuWaza> HissatuWazas;
-public HissatuWaza CurrentHissatuWaza;
-
-public int active;
- void Awake() {
- 
-ChangeActive(active);
-}
-public void ChangeActive(int num){
-
-active=num;
-     CurrentHissatuWaza=HissatuWazas[active%HissatuWazas.Count];
-     foreach (var item in HissatuWazas)
+     foreach (var item in Elements)
      {if (item.icon)
      {
         item.icon.gameObject.SetActive(false);
@@ -37,35 +25,22 @@ active=num;
      }
         
      }
-     CurrentHissatuWaza.icon.gameObject.SetActive(true);
+     CurrentElement.icon.gameObject.SetActive(true);
       
 }
 
-void Hissatu(){
+public override void DecideEvent(){
    
-    if (CurrentHissatuWaza.mp.mpuse(CurrentHissatuWaza.mpUseAmount))
+    if (CurrentElement.mp.mpuse(CurrentElement.mpUseAmount))
     {
-          anim.Play(CurrentHissatuWaza.Name);
+          anim.Play(CurrentElement.Name);
+          CurrentElement.delayEvent.Execute();
     }
     
 }
- void Update() {
-    
-    
-    if (keiinput.Instance.GetKey(WazaKey))
-    {
-      Hissatu();
-    }
-
-if(AddKey.keydown()){
-ChangeActive(active-1);
-}
-if(DownKey.keydown()){
-ChangeActive(active+1);
-}
    
 
-}
+
 
 
 }

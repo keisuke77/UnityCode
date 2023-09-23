@@ -39,8 +39,8 @@ private void Awake() {
         foreach (var item in  navchaises)
         {
             
-        item.Stop();
-        PoseEnd+=item.ReStart;
+        item.Stop=true;
+        PoseEnd+=()=>item.Stop=false;
       
         }
          }

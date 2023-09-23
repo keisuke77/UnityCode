@@ -145,7 +145,7 @@ public class soundManager : Singleton<soundManager>
     public void PlaySe(int index)
     {
         index = Mathf.Clamp(index, 0, se.Length);
- 
+ Debug.Log("Se");
         seAudioSource.PlayOneShot(se[index], SeVolume * Volume);
     }
  

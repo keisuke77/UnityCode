@@ -34,7 +34,7 @@ public class attack : MonoBehaviour
 
         if (attackcore)
         {
-            damadable = attackcore.attackon(attacked,damageInfo);
+            damadable = attackcore.attackon(gameObject,attacked,damageInfo);
         }
         else
         {

@@ -5,13 +5,14 @@ using UnityEngine.UI;
 using DG.Tweening;
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(enemyhp))]
-public class navchaise : MonoBehaviour, IForceIdle
+public class navchaise : MonoBehaviour, IForceIdle,IMove
 {
     public UnityEngine.Events.UnityEvent discoverevent;
 
     [Header("Debug用　実際の追いかけるポイントとの距離　AgentDestinationはポイントと重ならないようにずらしてあるからこれとは違う")]
     public float agentdestinationdis;
-    
+    public float speed { get; set; }
+    public bool Stop { get; set; }
 
     public float patrollspeed = 2;
     public float meleeSpeed = 4;
@@ -182,32 +183,35 @@ private float nextChangeTime = 0f; // The time until the next patrol
         }
     }
 
-public void Stop(){
-
-if(anim!=null){
-    anim.enabled=false;
-}    
-if (agent!=null)
-{
-      agent.enabled=false;
+public void Active(bool a){
+    Stop=a;
 }
-  
-}
-public void ReStart(){
-
-if(anim!=null){
-    anim.enabled=true;
-}    
-if (agent!=null)
-{
-      agent.enabled=true;
-}
-}
-
 bool meleepatrol;
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (Stop)
+        {
+            if(anim){
+    anim.enabled=false;
+}    
+if (agent)
+{
+      agent.enabled=false;
+}
+return;
+        }else
+        {
+            
+if(anim){
+    anim.enabled=true;
+}    
+if (agent)
+{
+      agent.enabled=true;
+}
+        }
+
         if (basehp.HP == 0)
         {
             anim.FloatTo("speed", 0);

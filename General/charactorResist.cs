@@ -8,7 +8,8 @@ public class charactorResist : MonoBehaviour
    public ChatCharactor ChatCharactor;
 
 public void Set(){
-   gameObject.root().GetComponent<charactorchange>().charactorchanger(character);
+   
+   gameObject.root().GetComponent<charactorchange>().CurrentElementChange(character);
   
 }
  
@@ -23,7 +24,7 @@ public void Set(){
        character.ChatCharactor=ChatCharactor;
  
    }
-       gameObject.root().GetComponent<charactorchange>().characters.Add(character);
+       gameObject.root().GetComponent<charactorchange>().Elements.Add(character);
    }
 
 
