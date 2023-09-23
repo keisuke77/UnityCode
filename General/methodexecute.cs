@@ -14,7 +14,6 @@ public class methodexecute : StateMachineBehaviour
     }
 
    public string methodname;
-   public warpdata warpdata;
     public MyEnumType timing;
     public bool hikisuu;
     public int num;
@@ -47,13 +46,7 @@ public class methodexecute : StateMachineBehaviour
                  obj.gameObject.SendMessage(methodname);
          
             }
-           
-if (warpdata)
-{
-    
-warpdata.warps(obj.gameObject);
-}
-              
+               
           }
           override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {

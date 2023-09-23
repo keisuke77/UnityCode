@@ -1,0 +1,20 @@
+{
+    "name": "osero",
+    "rootNamespace": "",
+    "references": [
+        "GUID:47a75da884ac5c24294ae1989c07e7b7",
+        "GUID:2bafac87e7f4b9b418d9448d219b01ab",
+        "GUID:58c583e0f53cbdb4b9a220bf432cfa66",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:9f9fb491d9008834182a22cb71ac7aa6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

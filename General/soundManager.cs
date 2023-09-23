@@ -115,6 +115,13 @@ public class soundManager : Singleton<soundManager>
     //BGM再生
     public void PlayBgm(int index)
     {
+        if (bgm==null)
+        {
+            keikei.delaycall(()=>PlayBgm(index),1);
+            return;
+        }
+
+
         index = Mathf.Clamp(index, 0, bgm.Length);
  
         bgmAudioSource.clip = bgm[index];

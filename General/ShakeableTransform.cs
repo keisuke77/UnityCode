@@ -49,7 +49,7 @@ public static ShakeableTransform m_shakeable;
 
     private void Awake()
     {  
-        keikei.m_shakeable=this;
+      
         m_shakeable=this;
         seed = Random.value;
         displaynum++;

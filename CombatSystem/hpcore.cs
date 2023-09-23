@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Coffee.UIExtensions;
 using DG.Tweening;
 using System;
 using System.Linq;
@@ -106,21 +105,19 @@ public class hpcore : basehp
     public int defence;
     public int defaultdefencepower;
   
+  public List<DelayEvent> damageEvent; 
     public bool AttackerLook=true;
     [Range(0,20)]
-    public float DamageShakePower=1;
+  
     public GameObject healparticle;
 
     public bool deathonce;
     public UnityEvent deathEvent;
     public EffectAndParticle deatheffect;
     public CameraManager.Parameter deathCameraPram;
-    public ChatData DeathChatData;
     public bool damageshake;
  
- public itemdrops itemdrops;
-
-
+public ChatDataAction chatDataAction;
 public Action cooldownHitAction;
 public Action HpHealAction;
 
@@ -213,7 +210,7 @@ pos=pos+new Vector3(UnityEngine.Random.Range(-1,1),UnityEngine.Random.Range(-1,1
             cooldown = false;
         }
         if (HP == 0 || anim.GetBool("dead") || nodamage || cooldown || damage == 0)
-        {
+        {if(cooldownHitAction!=null)
             cooldownHitAction();
             return false;
         }
@@ -246,7 +243,10 @@ foreach (var item in damageAnims)
     }
 }
 
-
+if (damageEvent!=null)
+{
+    damageEvent.ForEach(x=>x.Execute());
+}
 
         
          if (hpImage != null)
@@ -300,7 +300,7 @@ if (damageshake)
         keikei.delaycall(()=>cooldown=false,cooldowntime);
      
     }
-
+public bool DeathTransformTweenStop;
     public void Death()
     {  if (deathonce)return;
            
@@ -308,9 +308,14 @@ if (damageshake)
 
         if (deathCameraPram!=null&&CameraManager.instance!=null)
         {
-              CameraManager.instance.UpdatePram(deathCameraPram);
+              CameraManager.instance.TweenPram(deathCameraPram);
 
         }
+        if (DeathTransformTweenStop)
+        {
+              transform.DOKill();
+        }
+      
        if (anim != null)
         {
             anim.SetBool("death", true);
@@ -331,18 +336,15 @@ if (deatheffect!=null)
       deatheffect.Execute(transform, null);
     
 }
-    if (itemdrops != null)
-        {
-            itemdrops.itemdropers(gameObject);
-        }
 
-        if (ChatExecute.instance!=null&&DeathChatData!=null)
-      { 
-ChatExecute.instance.Execute(DeathChatData,OnDeath);
-      }else
-      {
-        OnDeath();
-      }
+
+if (chatDataAction!=null){
+    chatDataAction.EndEvent.AddListener(OnDeath);
+    chatDataAction.Play();
+
+}
+
+    
     }
 
     public virtual void OnDeath() { }

@@ -11,7 +11,7 @@ public class character
     public ChatCharactor ChatCharactor{set{ChatCharactorSet(value);_ChatCharactor=value;
  }get{return _ChatCharactor;}
     }
-   
+
     ChatCharactor _ChatCharactor;
    [HideInInspector] public string layerName;
   [HideInInspector] public string name;
@@ -22,18 +22,11 @@ public class character
    [Header("説明")]
   [HideInInspector] public string Explain;
   [HideInInspector] public int defence;
-
-
     public GameObject bone;
     public GameObject mesh;
     public Avatar avatar;
-    public GameObject righthand;
-    public GameObject lefthand;
-    public GameObject rightfoot;
-    public GameObject leftfoot;
-    public GameObject weapon;
+    public GameObject righthand,lefthand,rightfoot,leftfoot,weapon;
     public transformdata weaponstransform;
-  
    
     public float HPRate(){
        return (float) hp/maxhp;
@@ -49,24 +42,22 @@ maxhp=ChatCharactor.MaxHP;
 Explain=ChatCharactor.Explain;
 defence=ChatCharactor.Defence;
 
-    }
-    
-    
+    }  
     public void Set(charactorchange charactorchange)
     {  
-        foreach (var characterss in charactorchange.characters)
+        foreach (var Elementss in charactorchange.Elements)
         {
-            characterss.bone.SetActive(false);
-            characterss.mesh.SetActive(false);
+            Elementss.bone.SetActive(false);
+            Elementss.mesh.SetActive(false);
         }
      
         bone.SetActive(true);
         mesh.SetActive(true);
-      
+    
         charactorchange.anim.avatar = avatar;
-      
+        charactorchange.anim.enabled=true;
       //アバター変更の後に変更する必要がある
-       for (int i = 0; i < charactorchange.characters.Count; i++)
+       for (int i = 0; i < charactorchange.Elements.Count; i++)
         {
                charactorchange.anim.SetLayerWeight(i,0);
         }
@@ -74,24 +65,20 @@ defence=ChatCharactor.Defence;
  if (charactorchange.weapons!=null)
         {
               charactorchange.weapons.transform.parent = righthand.transform;
-
         }
-      
         //武器の装着
         if (weaponstransform != null && charactorchange.weapons != null)
         {
-            keikei.transformenter(charactorchange.weapons.transform, weaponstransform);
+            transformenter(charactorchange.weapons.transform, weaponstransform);
         }
         
     }
-}
+public void transformenter(Transform trans,transformdata transformdata){
 
-public enum charactername
-{
-    mario,
-    miku,
-    man,
-    unitychan
+trans.localPosition=transformdata.pos;
+trans.localRotation=transformdata.rotation;
+
+}
 }
 
 public interface GetBodyPart
@@ -102,65 +89,25 @@ public interface GetBodyPart
     GameObject GetRightFoot();  GameObject GetWeapon();
 }
 
-public class charactorchange : MonoBehaviour, GetBodyPart
+public class charactorchange : SelectBehabior<character> ,GetBodyPart
 {
-    
-    
-
-
-    public KeyCode ChangeKey;   
-    public GameObject footsmoke;
     public Dropdown DropDown;
     public GameObject weapons;
-    public List<character> characters;
     public Animator anim;
     [Button("Reload","リロード")]
     public int q;
-    public AnimSpeedChangeState AnimSpeedChangeState;
-   
-    // Start is called before the first frame update
     public Text text;
-    public int active = 0;
     string temptext;
-    int tempactive = -1;
     int hairetucheck;
     public List<string> m_DropOptions;
-    character currentcharactor;
-
-    public float Delay;
-
-
+    public float CharactorApeareDelay;
     public GameObject ChangeSpawn;
     public DoTweenSeri DoTweenSeri;
-    //　メインカメラ
-    public GameObject GetRightHand()
-    {
-        return currentcharactor.righthand;
-    }
-
-    public GameObject GetLeftHand()
-    {
-        return currentcharactor.lefthand;
-    }
-
-    public GameObject GetLeftFoot()
-    {
-        return currentcharactor.leftfoot;
-    }
-
-    public GameObject GetRightFoot()
-    {
-        return currentcharactor.rightfoot;
-    }  
-    
-    public GameObject GetWeapon()
-    {
-        return currentcharactor.weapon;
-    }
-
-    /// <summary>
-    /// This function is called when the behaviour becomes disabled or inactive.
-    /// </summary>
+    public GameObject GetRightHand()=> CurrentElement.righthand;
+    public GameObject GetLeftHand()=>CurrentElement.lefthand;
+    public GameObject GetLeftFoot()=> CurrentElement.leftfoot;
+    public GameObject GetRightFoot()=>CurrentElement.rightfoot;
+    public GameObject GetWeapon()=>CurrentElement.weapon;
     void OnDisable()
     {
         this.enabled = true;
@@ -168,37 +115,35 @@ public class charactorchange : MonoBehaviour, GetBodyPart
 
     void Awake()
     {
-        tempactive = -1;
-        if (gameObject.pclass() != null)
-        {
-            gameObject.pclass().charactorchange = this;
-        }
-        
+        gameObject.Stop();
     }
-private void OnEnable() {
+ void OnEnable() {
     Reload();
 }
 public void Reload(){
-     currentcharactor.Set(this);
+    if (CurrentElement==null)
+    {
+       keikei.delaycall(Reload,1);
+        return;
+    }
+     CurrentElement.Set(this);
 }
     void Start()
     {
    
-		  if (GetComponent<hpcore>()!=null)
+		  if (GetComponent<hpcore>())
         { 
         hpcore= GetComponent<hpcore>();
         }
         
         //DropDownの要素にリストを追加
-        foreach (character item in characters)
+        foreach (character item in Elements)
         {   
                m_DropOptions.Add(item.name);
+               item.mesh.SetActive(false);
         }
-          foreach (character item in characters)
-        {   
-            item.mesh.SetActive(false);
-        }
-        if (DropDown != null)
+        
+        if (DropDown)
         {
             DropDown.ClearOptions();
             DropDown.AddOptions(m_DropOptions);
@@ -206,69 +151,58 @@ public void Reload(){
     
     }
 
-    public void collidespawnSet(GameObject obj)
-    {
-        var a = obj.AddComponentIfnull<collidespawn>();
-        a.obj = footsmoke;
-    }
+
 
     public void characterhide()
     {
-        foreach (var characterss in characters)
+        foreach (var Elementss in Elements)
         {
-            characterss.mesh.SetActive(false);
+            Elementss.mesh.SetActive(false);
         }
     } 
-
-    public void charactorchanger(int num)
-    {  
-        
-        charactorchanger(characters[Mathf.Abs(num%characters.Count)]);
-       
-      
-    }  
     Sequence ChangeTween;
-    public void charactorchanger(character characterss)
+    
+    public override void ChangeCallBack()
     { 
-        
          if (ChangeSpawn!=null)
         {
             Instantiate(ChangeSpawn,transform.position,Quaternion.identity);
         } 
+        gameObject.Stop();
         if (ChangeTween!=null)
         {
-                //チェンジ中に周りの動きを止める
-         ChangeTween.Complete();
+                     ChangeTween.Complete();
   
         }
          
        ChangeTween= DoTweenSeri.Play(transform);
         keikei.delaycall(()=>{
-
-        currentcharactor=characterss;  
-        currentcharactor.Set(this);
+        gameObject.Restart();
+        CurrentElement.Set(this);
  
         if (hpcore!=null)
         {
-        hpcore.HP=currentcharactor.ChatCharactor.CurrentHP;
-        hpcore.maxHP=currentcharactor.ChatCharactor.MaxHP;
-        hpcore.defence=currentcharactor.ChatCharactor.Defence;
+        hpcore.HP=CurrentElement.ChatCharactor.CurrentHP;
+        hpcore.maxHP=CurrentElement.ChatCharactor.MaxHP;
+        hpcore.defence=CurrentElement.ChatCharactor.Defence;
         }
         if (GetComponent<AnimSpeedChangeState>()!=null)
         {
-            GetComponent<AnimSpeedChangeState>().runSpeed=currentcharactor.ChatCharactor.RunSpeed;
-            GetComponent<AnimSpeedChangeState>().idleSpeed=currentcharactor.ChatCharactor.IdleSpeed;
-            GetComponent<AnimSpeedChangeState>().walkSpeed=currentcharactor.ChatCharactor.WalkSpeed;
+            GetComponent<AnimSpeedChangeState>().runSpeed=CurrentElement.ChatCharactor.RunSpeed;
+            GetComponent<AnimSpeedChangeState>().idleSpeed=CurrentElement.ChatCharactor.IdleSpeed;
+            GetComponent<AnimSpeedChangeState>().walkSpeed=CurrentElement.ChatCharactor.WalkSpeed;
         }
         if (GetComponent<attackcore>()!=null)
         { 
-          GetComponent<attackcore>().basedamagevalue=currentcharactor.ChatCharactor.Power;
-          GetComponent<attackcore>().baseforcepower=currentcharactor.ChatCharactor.knockBack;    
+          GetComponent<attackcore>().basedamagevalue=CurrentElement.ChatCharactor.Power;
+          GetComponent<attackcore>().baseforcepower=CurrentElement.ChatCharactor.knockBack;    
         }  if (GetComponent<Jump>()!=null)
-        { GetComponent<Jump>().DefaultJumpSpeed=currentcharactor.ChatCharactor.JumpPower;
+        { GetComponent<Jump>().DefaultJumpSpeed=CurrentElement.ChatCharactor.JumpPower;
         }
 
-        },Delay);
+        },CharactorApeareDelay);
+ //チェンジ中に周りの動きを止める
+   
      try
 {
       var navchaises=GameObjectExtension.GetComponentsInActiveScene<navchaise>(false);
@@ -278,8 +212,8 @@ public void Reload(){
         foreach (var item in  navchaises)
         {
             
-        item.Stop();
-        keikei.delaycall(()=>item.ReStart(),1.5f);
+        item.Stop=true;
+        keikei.delaycall(()=>item.Stop=false,1.5f);
         }
          }
 }
@@ -293,26 +227,16 @@ catch (System.Exception)
 hpcore hpcore;
    // Update is called once per frame
     void LateUpdate()
-    {   
-       
-
-        if (ChangeKey.keydown())
-        {
-            charactoradd();
-        }
+    {      
          if(text != null)
         {
-            text.text = currentcharactor.name;
+            text.text = CurrentElement.name;
         }
-        if (active != tempactive)
-        {
-            tempactive = active;
-            charactorchanger(active);
-        }
-        if (hpcore!=null&&currentcharactor!=null)
+       
+        if (hpcore!=null&&CurrentElement!=null)
         {    
-          currentcharactor.hp=hpcore.HP;
-          currentcharactor.maxhp=hpcore.maxHP;
+          CurrentElement.hp=hpcore.HP;
+          CurrentElement.maxhp=hpcore.maxHP;
         }
         if (DropDown != null)
         {
@@ -321,7 +245,7 @@ hpcore hpcore;
                 hairetucheck = 0;
                 temptext = DropDown.captionText.text;
 
-                foreach (var item in characters)
+                foreach (var item in Elements)
                 {
                     hairetucheck++;
                     if (item.name == DropDown.captionText.text)
@@ -331,20 +255,5 @@ hpcore hpcore;
                 }
             }
         }
-    }
-
-    public void charactoradd()
-    {
-        active++;
-    }
-
-    public void charactordown()
-    {
-        active--;
-    }
-
-    public void charactorchanges(int nums)
-    {
-        active = nums;
     }
 }

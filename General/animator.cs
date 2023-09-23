@@ -20,9 +20,10 @@ public void SetBoolfalse(string name){
 anim.SetBool(name,false);
 
 }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+public void Blend(AnimationClip clip){
+
+anim.BlendFromCurrentState(clip);
+
+}
+
 }

@@ -35,22 +35,6 @@ public static Camera NowCameraGet(){
         }
         return temp;
 }
-  public static void Stop(this GameObject g ){
-
-    foreach (var item in  g.root().GetComponentsInChildren<IMove>())
-    {
-        
-item.Stop = true; 
-    }
-  }  public static void Restart(this GameObject g ){
-
-    foreach (var item in  g.root().GetComponentsInChildren<IMove>())
-    {
-        
-item.Stop = false; 
-    }
-  }
-
      
    
      // 通常trueしか指定しないのでデフォルト引数をtrueにしてます

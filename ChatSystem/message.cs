@@ -42,6 +42,8 @@ public class message : MonoBehaviour
 
     //　マウスクリックを促すアイコン
     public List<controll> controlls; 
+
+    public UnityEvent messsageOnEvent;
     string[] mes;
     public int mesNum = 0;
     [Button( "Test", "実行")]
@@ -51,10 +53,7 @@ public class message : MonoBehaviour
     }
     void Awake()
     {
-        if (gameObject.pclass() != null)
-        {
-            gameObject.pclass().message = this;
-        }
+
                 
         finish();
     }
@@ -100,6 +99,10 @@ ac();
 
         MessageEndCallback = ac;
         auto = autos;
+        if (messsageOnEvent!=null)
+        {messsageOnEvent.Invoke();
+            
+        }
         if (icon!=null)
         {
              icon.sprite = icons;

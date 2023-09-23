@@ -238,7 +238,7 @@ if (temp!=null)
                             return;
                         }
 
-                    if (CurrentSelectKomaInfo.Koma == null)
+                    if (CurrentSelectKomaInfo?.Koma == null)
                     {
                        
                         if (TouchKoma.Koma == AirKoma)

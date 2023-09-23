@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using ItemSystem;
 
 [RequireComponent(typeof(FlickerModel))]
 [RequireComponent(typeof(Animator))]
@@ -17,14 +16,7 @@ public class enemyhp : hpcore
 
     public override void OnDamage(int damage)
     {
-        if (itemcurrent.instance != null)
-        {
-            Itemkind item = itemcurrent.instance.Itemkind;
-            if (item != null)
-            {
-                item.Resitance -= damage / 10;
-            }
-        }
+        
     }
 
     public override void damagestop()
@@ -70,14 +62,8 @@ public class enemyhp : hpcore
 
         VanishEvent += () =>
         {
-            if (killer != null)
-            {
-                killer.acessdata().addexp(exp);
-                killer.acessdata().nowquest?.enemykill(enemyname);
-            }
 
             events.Invoke();
         };
-        keikei.dissolvedeath(gameObject, VanishEvent);
-    }
+           }
 }

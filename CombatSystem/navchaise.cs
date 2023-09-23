@@ -158,7 +158,7 @@ private float nextChangeTime = 0f; // The time until the next patrol
         if (message != "")
         {
             message.CreateMesImage(gameObject, mesPos);
-            ChatExecute.instance?.message.SetMessagePanel(message, true, icon);
+            ChatExecute.Instance?.message.SetMessagePanel(message, true, icon);
         }
     }
 

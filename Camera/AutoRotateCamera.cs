@@ -51,10 +51,7 @@ public class AutoRotateCamera : MonoBehaviour
     void Awake()
     {
         camera = gameObject.transform;
-        if (gameObject.proottag())
-        {
-            gameObject.pclass().AutoRotateCamera = this;
-        }
+       
         Player = gameObject.root().transform;
      }
 

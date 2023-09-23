@@ -41,6 +41,11 @@ public class CameraShake : MonoBehaviour
             CoroutineRunner.Instance.StartCoroutine(Shake(parameters.shakeDuration, parameters.shakeMagnitude, parameters.dampingSpeed));
         }
     }
+ public void Shake(ShakePram parameters)
+    {
+      TriggerShake(parameters.shakeParameters);
+    }
+
 
     static IEnumerator Shake(float duration, float magnitude, float damping)
     {

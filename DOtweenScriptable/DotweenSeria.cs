@@ -12,6 +12,7 @@ public enum SequenceMethod
 [System.Serializable]
 public class DoTweenSeri
 {
+    public bool TweeningPlayable;
     [System.Serializable]
     public class DOTweenSequence
     {
@@ -24,35 +25,40 @@ public class DoTweenSeri
  public UnityEvent StartEvent;
     public List<DOTweenSequence> DOTweenSequences;
 
-    
+    Sequence BeforeSequence;
 
     public Sequence Play(Transform tra)
     {
-        Sequence Sequence = DOTween.Sequence();
+        if (BeforeSequence!=null)
+        if (BeforeSequence.IsPlaying()&&!TweeningPlayable)
+        {
+            return null;
+        }
+         BeforeSequence = DOTween.Sequence();
         foreach (var item in DOTweenSequences)
         {
             Sequence temp = item.DOTweenScriptable.GetSequence(tra);
             switch (item.SequenceMethod)
             {
                 case SequenceMethod.Append:
-                    Sequence.Append(temp);
+                    BeforeSequence.Append(temp);
                     break;
 
                 case SequenceMethod.Join:
-                    Sequence.Join(temp);
+                    BeforeSequence.Join(temp);
                     break;
                 default:
 break;
             }
-              Sequence.AppendCallback(() =>
+              BeforeSequence.AppendCallback(() =>
     {
        item.Event.Invoke();
     }); 
     
-    Sequence.timeScale = item.Speed;  
+    BeforeSequence.timeScale = item.Speed;  
   
         }
         StartEvent.Invoke();
-          return Sequence;
+          return BeforeSequence;
     }
 }

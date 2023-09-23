@@ -6,6 +6,14 @@ using System.Collections.Generic;
 
 namespace Shogi
 {
+    public class Behavior
+    {
+                public KomaInfo PlaceKoma,PlacedKoma;
+                public Behavior(KomaInfo PlaceKomas=null,KomaInfo PlacedKomas=null){
+PlaceKoma=PlaceKomas;
+PlacedKoma=PlacedKomas;
+                }
+    }
     public static class Utility
     {
         public static List<Vector2> DuplicateAdress(this List<KomaInfo> KomaInfos)
@@ -58,7 +66,7 @@ namespace Shogi
      
 
         //盤面の自分のおける駒の合計スコア盤面評価関数
-        public static KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>> GetMostBehavior(
+        public static KeyValuePair<int, Behavior> GetMostBehavior(
             this List<KomaInfo> KomaInfos,
             int BoardSize,
             Team CurrentTeam,
@@ -66,7 +74,7 @@ namespace Shogi
         )
         {
             int TotalScore = 0;
-            KeyValuePair<KomaInfo, KomaInfo> temp = new KeyValuePair<KomaInfo, KomaInfo>();
+            Behavior temp = new Behavior();
             foreach (KomaInfo item in KomaInfos)
             {
                 if (item.Team == CurrentTeam)
@@ -75,31 +83,31 @@ namespace Shogi
                     if (k != null)
                     {
                         TotalScore += k.Koma.Score;
-                        if (temp.Key == null)
+                        if (temp.PlaceKoma == null)
                         {
-                            temp = new KeyValuePair<KomaInfo, KomaInfo>(item, k);
+                            temp = new Behavior(item, k);
                         }
-                        if (temp.Value.Koma.Score < k.Koma.Score)
+                        if (temp.PlacedKoma.Koma.Score < k.Koma.Score)
                         {
-                            temp = new KeyValuePair<KomaInfo, KomaInfo>(item, k);
+                            temp = new Behavior(item, k);
                         }
                     }
                 }
             }
-            return new KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>>(
-                returnTotal == true ? TotalScore : temp.Value.Koma.Score,
+            return new KeyValuePair<int, Behavior>(
+                returnTotal == true ? TotalScore : temp.PlacedKoma.Koma.Score,
                 temp
             );
         }
 
-        public static List<KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>>> GetAllBehavior(
+        public static List<KeyValuePair<int, Behavior>> GetAllBehavior(
             this List<KomaInfo> KomaInfos,
             int BoardSize,
             Team CurrentTeam
         )
         {
-            List<KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>>> result =
-                new List<KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>>>();
+            List<KeyValuePair<int,Behavior>> result =
+                new List<KeyValuePair<int, Behavior>>();
             foreach (KomaInfo item in KomaInfos)
             {
                 if (item.Team == CurrentTeam)
@@ -108,9 +116,9 @@ namespace Shogi
                     if (k.Koma != null)
                     {
                         result.Add(
-                            new KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>>(
+                            new KeyValuePair<int, Behavior>(
                                 k.Koma.Score,
-                                new KeyValuePair<KomaInfo, KomaInfo>(item, k)
+                                new Behavior(item, k)
                             )
                         );
                     }
@@ -119,14 +127,13 @@ namespace Shogi
             return result;
         }
 
-        public static List<KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>>> GetAllWaysBehavior(
+        public static List<KeyValuePair<int, Behavior>> GetAllWaysBehavior(
             this List<KomaInfo> KomaInfos,
             int BoardSize,
             Team CurrentTeam
         )
         {
-            List<KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>>> result =
-                new List<KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>>>();
+            List<KeyValuePair<int, Behavior>> result = new List<KeyValuePair<int, Behavior>>();
                 //自分のチームの全ての駒に対して取得可能な駒を調べる
                   
             foreach (KomaInfo item in KomaInfos)
@@ -140,9 +147,9 @@ namespace Shogi
                         foreach (var koma in k)
                         {
                             result.Add(
-                                new KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>>(
+                                new KeyValuePair<int, Behavior>(
                                     koma.Koma.Score,
-                                    new KeyValuePair<KomaInfo, KomaInfo>(item, koma)
+                                    new Behavior(item, koma)
                                 )
                             );
                         }

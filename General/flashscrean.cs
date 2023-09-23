@@ -16,7 +16,11 @@ public class flashscrean : MonoBehaviour
         // 時間が経過するにつれて徐々に透明にします。
         this.img.color = Color.Lerp(this.img.color, Color.clear, Time.deltaTime);
     }
-
+  public void WhiteOut()
+    {
+ this.img.color = new Color(0f, 0f, 0f, 1f);
+  
+    }
     public void damage()
     {
         // *画面を赤塗りにする

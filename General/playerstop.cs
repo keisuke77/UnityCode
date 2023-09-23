@@ -13,11 +13,12 @@ public class playerstop : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-       animator.GetComponent<IMove>().Stop=true;
+      var list= animator.gameObject.Stop();
+      Debug.Log(list);
+
     } 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    { animator.GetComponent<IMove>().Stop=false;
-  
-        animator.gameObject.pclass().playerMovePram.stop=false;
+    { 
+        animator.gameObject.Restart();
     }
 }

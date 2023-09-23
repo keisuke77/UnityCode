@@ -8,7 +8,6 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using System;
 using UnityEditor;
-using ItemSystem;
 
 /// <summary>
 /// 専用のランダムクラス
@@ -32,18 +31,6 @@ public class animstringbool
     public bool check;
 }
 
-[System.Serializable]
-public class targeteffect
-{
-    public Transform target;
-
-    public bodypart part;
-    public Effekseer.EffekseerEffectAsset effect = null;
-    public Vector3 rot;
-    public bool parent;
-    public GameObject particle;
-    public damagevalue damagevalue;
-}
 
 [System.Serializable]
 public class damagevalue
@@ -116,18 +103,6 @@ btn.onClick.AddListener(()=>ac());
     public static int stringindexScene(this string name)
     {
         return SceneManager.GetSceneByName(name).buildIndex - 1;
-    }
-
-    public static float GetAxis(this string axis)
-    {
-        try
-        {
-            return Input.GetAxis(axis);
-        }
-        catch (System.Exception e)
-        {
-            return 0;
-        }
     }
 
     public static void ButtonEventSet(this Button btn, System.Action ac)
@@ -208,18 +183,7 @@ btn.onClick.AddListener(()=>ac());
         return (GameObject)Resources.Load(name);
     }
 
-    public static float GetAxis(this string[] axis)
-    {
-        foreach (var item in axis)
-        {
-            float n = item.GetAxis();
-            if (n != 0)
-            {
-                return n;
-            }
-        }
-        return 0;
-    }
+  
 
     public static void transformreset(this Transform trans)
     {
@@ -228,29 +192,7 @@ btn.onClick.AddListener(()=>ac());
         trans.gameObject.root().transform.position = trans.gameObject.root().transform.position + p;
     }
 
-    public static bool keydown(this KeyCode[] keycodes)
-    {
-        foreach (KeyCode item in keycodes)
-        {
-            if (item.keydown())
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static bool keyup(this KeyCode[] keycodes)
-    {
-        foreach (KeyCode item in keycodes)
-        {
-            if (item.keyup())
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+  
     public static void boolset(this GameObject obj, animstringbool animstringbool)
     {
         obj.GetComponent<Animator>().SetBool(animstringbool.boolname, animstringbool.check);
@@ -263,45 +205,6 @@ btn.onClick.AddListener(()=>ac());
             item.removecomponentandattach<T1, T2>();
         }
         return default(T2);
-    }
-
-  public static bool keydown(this KeyCode keyCode)
-{
-    switch (keyCode)
-    {
-        case KeyCode.Mouse0:
-            if (Input.GetMouseButtonDown(0))
-            {
-                return true;
-            }else
-            {
-                 return false;
-            }
-           
-        case KeyCode.Mouse1:
-            return Input.GetMouseButtonDown(1); 
-             case KeyCode.Mouse2:
-            return Input.GetMouseButtonDown(2);
-        // 追加したい他のマウスボタンや特別なキーコードの場合をここに追加
-        default:
-            return Input.GetKeyDown(keyCode);
-    }
-}
-    public static bool keyup(this KeyCode KeyCode)
-    { if (KeyCode==KeyCode.Mouse0)
-        {
-            return Input.GetMouseButtonUp(0);
-        }
-        if (KeyCode==KeyCode.Mouse1)
-        {
-            return Input.GetMouseButtonUp(1);
-        }
-        return Input.GetKeyUp(KeyCode);
-    }
-
-    public static bool keyhold(this KeyCode KeyCode)
-    {
-        return Input.GetKey(KeyCode);
     }
 
     public static T2 ForceChildremovecomponentandattach<T1, T2>(this GameObject obj)
@@ -395,11 +298,6 @@ btn.onClick.AddListener(()=>ac());
         return ac;
     }
 
-    public static Camera Getplayercamera(this GameObject obj)
-    {
-        return obj.root().GetComponent<playerclass>().AutoRotateCamera.GetComponent<Camera>();
-    }
-
     public static GameObject SetActive(this Component com, bool bools)
     {
         com.gameObject.SetActive(bools);
@@ -463,29 +361,8 @@ btn.onClick.AddListener(()=>ac());
         ;
     }
 
-    public static void playerstop(this GameObject obj) => keikei.playerstop(obj);
 
-    public static void fadeinout(this Behaviour obj, bool actives)
-    {
-        Fade.LastScreenFade.FadeIn(
-            1f,
-            () =>
-            {
-                obj.fadeoutactives(actives);
-            }
-        );
-    }
-
-    public static void fadeinout(this GameObject obj, bool actives)
-    {
-        Fade.LastScreenFade.FadeIn(
-            1f,
-            () =>
-            {
-                obj.fadeoutactives(actives);
-            }
-        );
-    }
+  
 
     public static T rootaddcomponent<T>(this GameObject obj)
     {
@@ -510,10 +387,6 @@ btn.onClick.AddListener(()=>ac());
         return objs;
     }
 
-    public static iteminventory getinventory(this GameObject col)
-    {
-        return col.acessdata().saveiteminventory;
-    }
 
     public static float NotMini(this float num)
     {
@@ -559,18 +432,7 @@ btn.onClick.AddListener(()=>ac());
         yield return null;
     }
 
-    public static void fadeoutactives(this GameObject obj, bool actives = true)
-    {
-        obj.SetActive(actives);
-        Fade.LastScreenFade.FadeOut(1f);
-    }
-
-    public static void fadeoutactives(this Behaviour obj, bool actives)
-    {
-        obj.enabled = actives;
-        Fade.LastScreenFade.FadeOut(1f);
-    }
-
+ 
     public static void ratecheck(float rate)
     {
         var ran = UnityEngine.Random.value;
@@ -635,11 +497,6 @@ btn.onClick.AddListener(()=>ac());
         From.transform.DOMove(From.TwoPositionCloseRate(To, rate), time).OnComplete(() => action());
     }
 
-    public static message acessmessage(this GameObject obj)
-    {
-        return obj.pclass()?.message;
-    }
-
     public static void enabled(this Canvas can, bool boo)
     {
         can.enabled = boo;
@@ -664,38 +521,8 @@ btn.onClick.AddListener(()=>ac());
         self.GetComponent<DestroyEvent>().events = events;
     }
 
-    public static void itemdroper(this GameObject gameObject, itemdrop itemdrop)
-    {
-        foreach (var item in itemdrop.GetItemdropLists())
-        {
-            if (keikei.kakuritu(item.perdrop))
-            {
-                var a = keikei.instantiate(
-                    item.itemdropelement,
-                    gameObject.transform.position,
-                    Quaternion.identity
-                );
-                keikei.itemappendRandom(a, 6);
-            }
-        }
-    }
 
-    public static void itemdroper(this GameObject gameObject, GameObject obj)
-    {
-        var a = keikei.instantiate(obj, gameObject.transform.position, Quaternion.identity);
-        keikei.itemappend(a);
-    }
 
-    public static void itemchestdroper(this GameObject gameObject, itemdrop itemdrop)
-    {
-        var a = keikei.instantiate(
-            keikei.treasure,
-            gameObject.transform.position,
-            Quaternion.identity
-        );
-
-        a.GetComponent<GIE.Chest>().itemdrop = itemdrop;
-    }
 
     public static Collider Collider(this GameObject obj)
     {

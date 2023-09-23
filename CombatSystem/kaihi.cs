@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class kaihi : MonoBehaviour
@@ -13,18 +14,20 @@ public class kaihi : MonoBehaviour
     float time;
     public Animator anim;
 [Range(0,1)]public float useDashGage;
-
-void KaihiSuccees(){
+Tween kaihiTween;
+void KaihiSuccees(){ 
+    kaihiTween.Kill();
     hpcore.OnDamageText("かいひ！");
+    hpcore.cooldownHitAction-=KaihiSuccees;
+    keikei.delaycall(()=>hpcore.cooldown=false,1);
 }
 public void kaihiExecute(float duration=0.5f){
+
 hpcore.cooldown=true;
 hpcore.cooldownHitAction+=KaihiSuccees;
-keikei.delaycall(()=>{
-hpcore.cooldown=false;
+kaihiTween=keikei.delaycall(()=>{hpcore.cooldown=false;
 hpcore.cooldownHitAction-=KaihiSuccees;},duration);
-
-            anim.SetTrigger("kaihi");
+anim.SetTrigger("kaihi");
             
     
 }

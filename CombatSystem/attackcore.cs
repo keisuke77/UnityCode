@@ -87,6 +87,8 @@ public class attackcore : MonoBehaviour
     private float CritMultiplier = 3f;
 [Range(0,2)]
     public float AttackedObjAnimStopTime=0.1f;
+[Header("これを設定するとhpが０になったときすぐ攻撃がいかなくなる")]
+    public hpcore hpcore;
 
     public void CurrentAttackPartSet(string name)
     {
@@ -191,6 +193,7 @@ public void SetBodyPartCurrent(bodypart bodypart){
        DamageInfo damageInfos
     )
     {
+        if(hpcore?.HP<0)return false;
      DamageInfo damageInfo=damageInfos.ShallowCopy();
         var crit = Random.value <= CritRate;
 

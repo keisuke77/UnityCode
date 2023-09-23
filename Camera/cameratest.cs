@@ -8,6 +8,7 @@ public class CameraFollow : MonoBehaviour
     public Vector3 offset;            // カメラのオフセット
     public LayerMask obstacleLayer;   // 障害物のレイヤー
 
+
     void Update()
     {
         if (player == null || enemy == null) return;

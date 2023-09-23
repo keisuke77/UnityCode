@@ -66,7 +66,7 @@ public class bowshot : MonoBehaviour
 
         if (Input.GetKeyDown("space") && !auto && spacekeyshot)
         {
-            keikei.Shot(gameObject, shottarget, damagevalue, danyaku, speed);
+            Shot();
         }
     }
 

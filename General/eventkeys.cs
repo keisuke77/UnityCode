@@ -15,9 +15,7 @@ public UnityEvent eve;
 
 public controll controll;
 public bool Up;
-}
-
-public List<eventKey> eventKeys;
+}public List<eventKey> eventKeys;
     void Update()
     {
         foreach (var item in eventKeys)

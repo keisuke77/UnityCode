@@ -11,7 +11,6 @@ navchaise navchaise;
   GetComponent<basehp>().HP=enemystatus.HP;
   GetComponent<enemyhp>().enemyname=enemystatus.name;
   GetComponent<enemyhp>().exp=enemystatus.exp;
-  GetComponent<enemyhp>().itemdrops=enemystatus.itemdrops;
   GetComponent<navchaise>().meleeSpeed=enemystatus.speed;
   GetComponent<navchaise>().cantchasedis=enemystatus.patroldistance;
   GetComponent<navchaise>().patrollspeed=enemystatus.patrollspeed;

@@ -21,7 +21,7 @@ namespace Shogi
         public MainSystem MainSystem;
         public Team Team;
         List<KomaInfo> KomaInfos;
-        KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>> AIInput;
+        KeyValuePair<int, Behavior> AIInput;
          [SerializeField, ReadOnly]
         private KeyValuePair<int, KeyValuePair<Koma, KomaInfo>> AIInputStack;
         public KomaInfo AIInputplace;
@@ -125,8 +125,8 @@ private void Update() {
                     }
                 }
             }
-            AIInputplace = AIInput.Value.Key;
-            AIInputplaced = AIInput.Value.Value;
+            AIInputplace = AIInput.Value.PlaceKoma;
+            AIInputplaced = AIInput.Value.PlacedKoma;
             
    
         }

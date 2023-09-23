@@ -1,0 +1,18 @@
+{
+    "name": "DOtweenExtension",
+    "rootNamespace": "",
+    "references": [
+        "GUID:42e56a4483067304f9e662fab96375e5",
+        "GUID:58c583e0f53cbdb4b9a220bf432cfa66",
+        "GUID:9f9fb491d9008834182a22cb71ac7aa6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

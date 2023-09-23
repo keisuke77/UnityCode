@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class mp : MonoBehaviour
@@ -7,11 +8,23 @@ public class mp : MonoBehaviour
     public float MP = 100;
     public Image mpimage;
     public float increaseTime = 15f;
+
+    public UnityEvent MpFullEvent;
+    bool Frag;
     void Update()
     {
       
        MP+= maxMP*Time.deltaTime / increaseTime;
         MP = Mathf.Clamp(MP, 0, maxMP);
+        if (MP==maxMP&&Frag)
+        {
+            Frag=false;
+            MpFullEvent.Invoke();
+        }else if(MP<maxMP)
+        {
+            Frag=true;
+        }
+
         if (mpimage != null)
         {
             mpimage.fillAmount = (float)MP / maxMP;

@@ -24,6 +24,7 @@ public class WazaManagement : MonoBehaviour
         public int hpAbove; // HPの最小値
         public int hpBelow; // HPの最大値
         public waza waza;
+        public DelayEvents delayEvents;
     }
 
     private void Awake()
@@ -108,6 +109,7 @@ foreach (var item in MainWaza.wazalist)
             if (hpcore.HP >= hpChange.hpAbove && hpcore.HP <= hpChange.hpBelow)
             {
                 MainWaza = hpChange.waza;
+                hpChange.delayEvents.Execute();
                 break;
             }
         }

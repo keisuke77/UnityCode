@@ -1,0 +1,20 @@
+{
+    "name": "keiutility",
+    "rootNamespace": "",
+    "references": [
+        "UIMobileInput",
+        "UniTask.DOTween",
+        "DOTween",
+        "Effekseer",
+        "ItemSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

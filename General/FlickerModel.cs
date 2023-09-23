@@ -3,13 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
- 
+using DG.Tweening;
+[System.Serializable]
+ public class FilkerParam
+ {   
+    [SerializeField,Header("ダメージを受けたときの点滅色")]
+   public Color flickerColor = Color.red;
+    [SerializeField]
+ public float flickerDuration = 0.5f, flickerSpeed = 0.1f;
+  public bool isLerp;
+    
+ }
+
+
 public class FlickerModel : MonoBehaviour
 {
     [SerializeField,Header("ダメージを受けたときの点滅色")]
     protected Color flickerColor = Color.red;
     [SerializeField]
     protected float flickerDuration = 0.5f, flickerSpeed = 0.1f;
+    public bool isLerp;
     protected Dictionary<Material,Color> _materialAndInitialColors;
     protected virtual void Start()
     {StartCoroutine(DetectAllRenderer(gameObject));
@@ -18,9 +31,17 @@ public class FlickerModel : MonoBehaviour
     //使うときはこれを呼び出します
     public void damagecolor(){
         
-	StartCoroutine( ImageFlicker.Flicker(_materialAndInitialColors, flickerColor, flickerSpeed, flickerDuration));
+	StartCoroutine( ImageFlicker.Flicker(_materialAndInitialColors, flickerColor, flickerSpeed, flickerDuration,isLerp));
     }
+public void Play(FilkerParam filkerParam){
 
+    	StartCoroutine( ImageFlicker.Flicker(_materialAndInitialColors, filkerParam.flickerColor, filkerParam.flickerSpeed, filkerParam.flickerDuration,filkerParam.isLerp));
+
+}
+public void Play(FilkerParamscriptable filkerParam){
+
+   Play(filkerParam.fillerPram);
+}
 
 public void defaultcolorset(Color color){
 
@@ -75,7 +96,7 @@ public class ImageFlicker
 {
     
     public static IEnumerator Flicker(Dictionary<Material,Color> matAndInitialColors/*マテリアルと初期設定してあるカラー*/,
-        Color flickerColor/*点滅する色*/, float flickerSpeed/*点滅の速さ*/, float flickerDuration/*点滅する時間,秒*/)
+        Color flickerColor/*点滅する色*/, float flickerSpeed/*点滅の速さ*/, float flickerDuration/*点滅する時間,秒*/,bool isLerp=false)
     {
        
         if(matAndInitialColors.Count == 0)
@@ -93,7 +114,14 @@ public class ImageFlicker
             
             foreach(Material mat in matAndInitialColors.Keys)
             {
-                mat.color = flickerColor;
+                if (isLerp)
+        {
+            mat.DOColor(flickerColor,flickerSpeed);
+        }
+        else
+        {
+            mat.color = flickerColor;
+        }
             }
             yield return wait;
                       foreach(KeyValuePair<Material,Color> kvp in matAndInitialColors)

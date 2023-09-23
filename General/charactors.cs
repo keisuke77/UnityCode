@@ -16,20 +16,6 @@ public GameObject rightfoot;
 public GameObject leftfoot;
 public transformdata weaponstransform;
 
-public void Set(charactorchange charactorchange,character[] characters){
-
-foreach (var characterss in characters)
-	{
-      characterss.bone.SetActive(false);
-	characterss.mesh.SetActive(false);
-      	}
-			
-	bone.SetActive(true);
-	mesh.SetActive(true);
-    charactorchange.anim.avatar=avatar;
-    charactorchange.weapons.transform.parent=righthand.transform;
-    keikei.transformenter(charactorchange.weapons.transform,weaponstransform);
-}
 
    }
     

@@ -29,7 +29,7 @@ public class charges
             charge = false;
             chargeeffonce = false;
             handle.Stop();
-            anim.gameObject.pclass().playerMovePram.stop = false;
+            anim.gameObject.Restart();
         }
     }
 
@@ -37,7 +37,7 @@ public class charges
     {
         chargevalue += Time.deltaTime;
         anim.SetFloat("charge", chargevalue);
-        anim.gameObject.playerstop();
+        anim.gameObject.Stop();
 
         if (chargevalue > 1 && !chargeeffonce)
         {

@@ -3,20 +3,7 @@ using DG.Tweening;
 
 public static class ShortCut
 {
-    public static Animator GetPlayerAnimator(this GameObject p)
-    {
-        return p.pclass().anim;
-    }
-
-    public static playerclass pclass(this GameObject obj)
-    {
-        return obj.root().GetComponentIfNotNull<playerclass>();
-    }
-
-    public static CharactorClass cclass(this GameObject obj)
-    {
-        return obj.root().GetComponentIfNotNull<CharactorClass>();
-    }
+  
 
     public static bool ptag(this Collision col)
     {
@@ -77,8 +64,5 @@ public static class ShortCut
         return obj.gameObject.root();
     }
 
-    public static data acessdata(this GameObject obj)
-    {
-        return obj.root().pclass().datamanage.data;
-    }
+
 }

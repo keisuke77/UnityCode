@@ -33,7 +33,7 @@ public class ImageSelectorGrid : MonoBehaviour
     private AudioSource audioSource;
     public bool enableWrap = false;
     private bool isSelecting = false;
-    public KeyCode decisionKey = KeyCode.Return;  // The key used for making decision
+    public List<controll> decisionKey;  // The key used for making decision
     public UnityEvent onDecisionMade;  // Event that will be triggered when a decision is made
  public OutlineDetails outlineDetails;
 
@@ -76,7 +76,7 @@ public Vector2 dir;
             PlaySound(selectionChangedSound);
         }
 
-        if (!isSelecting && Input.GetKeyDown(decisionKey))
+        if (!isSelecting && keiinput.Instance.GetKeys(decisionKey))
         {    onDecisionMade?.Invoke();  // Trigger the onDecisionMade event when decision key is pressed
    
             OnImageSelected(selectedIndex);

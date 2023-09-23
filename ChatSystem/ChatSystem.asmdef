@@ -1,0 +1,18 @@
+{
+    "name": "ChatSystem",
+    "rootNamespace": "",
+    "references": [
+        "extensions",
+        "keiutility",
+        "DOTween.Modules"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

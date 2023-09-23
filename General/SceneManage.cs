@@ -57,7 +57,8 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 
     public void FadeLoadScene(string scenename)
     {
-        Fade.LastScreenFade.FadeIn(2f, () => LoadScene(scenename));
+        Fade.LastScreenFade.FadeIn(2f, () => {LoadScene(scenename); Fade.LastScreenFade.FadeOut(2);});
+         
     }
 
     public void FadeInoutScene(string scenename)

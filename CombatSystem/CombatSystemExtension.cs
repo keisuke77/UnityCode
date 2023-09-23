@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 
 /// <summary>
 /// GameObjectの拡張クラス
@@ -23,9 +25,59 @@ public class DamageInfo
     return (DamageInfo)this.Clone();
   }
 }
+
 public static class HPSystemExtension
 {
     //万能ダメージクラス
+
+    
+
+    public static void ColliderDataInput(this GameObject a_collider, GameObject a_object, ref Vector3 a_vector,float Power=30)
+    {
+        a_vector.Set(
+            a_object.transform.position.x - a_collider.transform.position.x,
+            0f,
+            a_object.transform.position.z - a_collider.transform.position.z
+        );
+        a_vector.Normalize();
+        a_vector*=Power;
+    }
+
+     public static async void CrossFadeAnimation(this Animator animator,string name,int CrossFadeSmoothLevel,System.Func<bool> Check=null)
+    {
+            animator.GetComponent<attackcore>().allofftriger();
+     
+           // 遷移が終わるまで待機
+            await animator.WaitForTransitionToEndAsync();
+
+            if (Check==null||Check())
+            {
+                       // 遷移が終わった後にCrossFadeを行う
+            animator.CrossFadeInFixedTime(name, Time.deltaTime * CrossFadeSmoothLevel);
+
+            }
+         
+    }
+  public static List<IMove> Stop(this GameObject g ){
+var list= g.root().GetComponentsInChildren<IMove>();
+    foreach (var item in list)
+    {
+        
+item.Stop = true; 
+    }
+    return list.ToList();
+  } 
+   public static void Restart(this GameObject g ){
+
+    foreach (var item in  g.root().GetComponentsInChildren<IMove>())
+    {
+        
+item.Stop = false; 
+    }
+  }
+
+
+
 
       public static bool Damage(this GameObject attacked,
        DamageInfo damageInfo,
@@ -126,7 +178,7 @@ public static class HPSystemExtension
                 return obj.GetComponent<GetBodyPart>()
                     .GetWeapon();      break;
             case bodypart.no:
-                return null;
+                return obj;
                 break;
             default:
                 return null;

@@ -20,35 +20,31 @@ public class PlayerControll : MonoBehaviour, IMove
     }
     public bool Stop { get; set; }
     
-     [SerializeField]
-    private float gravity = 9.8f;
+ 
     public Vector3 direction;
   
   [Header("アニメーションの速度最高値　基本最高値は１"),Range(0,10)]
-   public float _speed;
+    public float _speed=1;
     
     public bool AngleChangeBrake;
     public float animDamper=0.1f;
 
+public int FrameRate;
     public bool simplemove;
     void Start()
-    {Application.targetFrameRate = 120; 
-        if (gameObject.pclass() != null)
-        {
-            gameObject.pclass().PlayerControll = this;
-        }
-        cam = Camera.main;
-    }
+    {Application.targetFrameRate = FrameRate; 
+      
+             cam = Camera.main;
+    } 
 
-    void OnEnable()
-    {
-        targetRotation = transform.rotation;
-    }
+ void OnDisable()=>anim.SetFloat("speed", 0);
+     
+       
 
-    void Update()
-    {
-        CalculateMove();
-    }
+    void OnEnable()=> targetRotation = transform.rotation;
+ 
+    void Update()=> CalculateMove();
+
 
     void CalculateMove()
     {
@@ -93,7 +89,6 @@ public class PlayerControll : MonoBehaviour, IMove
         }
 
 
-    Debug.Log("hh");
         if (isTransformMove)
         {
             transform.position += direction * Time.deltaTime * TransformSpeed*speed;

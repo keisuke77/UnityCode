@@ -1,34 +1,28 @@
 using UnityEngine;
-using UnityEngine.UI;
-
-using System.Collections;
 using System.Collections.Generic;
-
 using System.Linq;
+using UnityEngine.SocialPlatforms.Impl;
 
 namespace Shogi
 {
     public static class AICore
     {
-            public static List<KomaInfo> ListCopy(this List<KomaInfo> originalList)
+        public static List<KomaInfo> ListCopy(this List<KomaInfo> originalList)
         {
             return originalList.Select(item => item.Clone()).ToList();
         }
-     
 
         public static List<KomaInfo> GetVirtualMoveBoard(
             this List<KomaInfo> KomaInfos,
-            KomaInfo PlaceKoma,
-            KomaInfo PlacedKoma,
+          Behavior behavior,
             Team CurrentTeam
         )
         {
             List<KomaInfo> VirtualBoard = KomaInfos.ListCopy();
-            KomaInfo vPlaceKoma = VirtualBoard.GetKomaFromAdress(PlaceKoma.Adress);
-            KomaInfo vPlacedKoma = VirtualBoard.GetKomaFromAdress(PlacedKoma.Adress);
+            KomaInfo vPlaceKoma = VirtualBoard.GetKomaFromAdress(behavior.PlaceKoma.Adress);
             VirtualBoard.Add(new KomaInfo(MainSystem._AirKoma, vPlaceKoma.Adress, CurrentTeam));
-            vPlaceKoma.Adress = vPlacedKoma.Adress;
-            VirtualBoard.Remove(vPlacedKoma);
+            vPlaceKoma.Adress = behavior.PlacedKoma.Adress;
+            VirtualBoard.Remove(VirtualBoard.GetKomaFromAdress(behavior.PlacedKoma.Adress));
             return VirtualBoard;
         }
 
@@ -39,9 +33,10 @@ namespace Shogi
             Team CurrentTeam
         )
         {
+            Behavior behavior= new Behavior(  new KomaInfo(PlaceKoma, PlacedKoma.Adress, CurrentTeam),
+                PlacedKoma);
             return KomaInfos.GetVirtualMoveBoard(
-                new KomaInfo(PlaceKoma, PlacedKoma.Adress, CurrentTeam),
-                PlacedKoma,
+              behavior,
                 CurrentTeam
             );
         }
@@ -53,233 +48,193 @@ namespace Shogi
             List<Koma> Stacks
         )
         {
-            KeyValuePair<Koma, KomaInfo> saveData = new KeyValuePair<Koma, KomaInfo>();
+            int bestScore = int.MinValue;
+            KeyValuePair<Koma, KomaInfo> bestMove = default;
 
-            int temp = 100;
-            //スタックの駒をランダムな空気の場所に配置実行
-            foreach (Koma item in Stacks)
+            foreach (var item in Stacks)
             {
-                foreach (KomaInfo RandomAir in KomaInfos)
+                foreach (var RandomAir in KomaInfos.Where(koma => koma.Team == Team.None))
                 {
-                    if (RandomAir.Team == Team.None)
+                    KomaInfo PlaceKoma = new KomaInfo(item, RandomAir.Adress, CurrentTeam);
+                    List<KomaInfo> firestBoard = KomaInfos.GetVirtualMoveBoard(item, RandomAir, CurrentTeam);
+
+                    int myScore = PlaceKoma.GetPlaceableMostHighScore(BoardSize, CurrentTeam, firestBoard).Koma.Score;
+                    int nextScore = firestBoard.GetMostBehavior(BoardSize, CurrentTeam.ReverseTeam(), false).Key;
+
+                    int result = myScore - nextScore;
+                    if (result > bestScore)
                     {
-                        KomaInfo PlaceKoma = new KomaInfo(item, RandomAir.Adress, CurrentTeam);
-
-                        List<KomaInfo> firestBoard = KomaInfos.GetVirtualMoveBoard(
-                           item,
-                            RandomAir,
-                            CurrentTeam
-                        );
-
-                        int MyScore = PlaceKoma.GetPlaceableMostHighScore(BoardSize, CurrentTeam,firestBoard)
-                            .Koma.Score;
-
-                        int NextScore = firestBoard
-                            .GetMostBehavior(BoardSize, CurrentTeam.ReverseTeam(), false)
-                            .Key;
-
-                        int result = MyScore - NextScore;
-                        if (temp == 100)
-                        {
-                            temp = result;
-                             saveData = new KeyValuePair<Koma, KomaInfo>(item, RandomAir);
-                    
-                        }
-                        if (result > temp)
-                        {
-                            temp = result;
-                            saveData = new KeyValuePair<Koma, KomaInfo>(item, RandomAir);
-                        }
+                        bestScore = result;
+                        bestMove = new KeyValuePair<Koma, KomaInfo>(item, RandomAir);
                     }
                 }
-
-              
             }
 
-return new KeyValuePair<int, KeyValuePair<Koma, KomaInfo>>(temp,saveData);
+            return new KeyValuePair<int, KeyValuePair<Koma, KomaInfo>>(bestScore, bestMove);
         }
-        
-//ゲーム理論のミニマックス法
-        public static KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>> GetMiniMaxBehavior(
+
+        //ゲーム理論のミニマックス法
+        public static KeyValuePair<int, Behavior> GetMiniMaxBehavior(
             this List<KomaInfo> KomaInfos,
             int BoardSize,
             Team CurrentTeam,
-            int Strength=0
+            int Strength = 0
         )
         {
-            int TempScore = 100;
-            KeyValuePair<KomaInfo, KomaInfo> temp = new KeyValuePair<KomaInfo, KomaInfo>();
-            List<KomaInfo> VirtualBoard=new List<KomaInfo>();
-          Team OriTeam=CurrentTeam;
-             foreach (
-                KeyValuePair<
-                    int,
-                    KeyValuePair<KomaInfo, KomaInfo>
-                > item in KomaInfos.GetAllWaysBehavior(BoardSize, CurrentTeam)
-            )
+            int bestScore = int.MinValue;
+            Behavior bestMove = default;
+
+            foreach (var behavior in KomaInfos.GetAllWaysBehavior(BoardSize, CurrentTeam))
             {
-                int Score=0;
+                int currentScore = CalculateScoreForBehavior(KomaInfos, behavior, BoardSize, CurrentTeam, Strength);
 
-                var KomaPlaceAndPlaced = item.Value;
-             
-                //自分のランダムに動かした時に取れる駒ランク
-                Score += item.Key;
-                //実際にランダムに動かした盤面を取得
-
-                VirtualBoard = KomaInfos.GetVirtualMoveBoard(
-                    KomaPlaceAndPlaced.Key,
-                    KomaPlaceAndPlaced.Value,
-                    CurrentTeam
-                );
- //ランダムに動かした後の相手の最も取れる駒のランク
-                var NextScore = VirtualBoard.GetMostBehavior(
-                    BoardSize,
-                    CurrentTeam.ReverseTeam(),
-                    false
-                );
-                Score-=NextScore.Key;
-
-for (var i = 0; i < Strength; i++)
-{
-      
-if (CurrentTeam==OriTeam)
-{
-      //ランダムに動かした後の自分の最も取れる駒のランク
-                 var MyScore = VirtualBoard.GetMostBehavior(
-                    BoardSize,
-                    CurrentTeam,
-                    false
-                );
-                  Score+=MyScore.Key;
-
-                 NextScore = VirtualBoard.GetMostBehavior(
-                    BoardSize,
-                    CurrentTeam.ReverseTeam(),
-                    false
-                );
-                Score-=NextScore.Key;
-      
-
-}else
-{
-    
-//ランダムに動かした後の自分の最も取れる駒のランク
-                 var MyScore = VirtualBoard.GetMostBehavior(
-                    BoardSize,
-                    CurrentTeam,
-                    false
-                );
-                  Score-=MyScore.Key;
-
-                 NextScore = VirtualBoard.GetMostBehavior(
-                    BoardSize,
-                    CurrentTeam.ReverseTeam(),
-                    false
-                );
-                Score+=NextScore.Key;
-      
-
-}
-                      
-CurrentTeam=CurrentTeam.ReverseTeam();
-                 VirtualBoard = VirtualBoard.GetVirtualMoveBoard(
-                    NextScore.Value.Key,
-                    NextScore.Value.Value,
-                    CurrentTeam
-                );   
-
-
-
-}
-
-
-                //最初のみ
-                if (TempScore == 100)
+                if (currentScore > bestScore)
                 {
-                    TempScore = Score;
-                    temp = new KeyValuePair<KomaInfo, KomaInfo>(
-                        KomaPlaceAndPlaced.Key,
-                        KomaPlaceAndPlaced.Value
-                    );
-                }
-                //次のループから
-                if (Score > TempScore)
-                {
-                    TempScore = Score;
-                    temp = new KeyValuePair<KomaInfo, KomaInfo>(
-                        KomaPlaceAndPlaced.Key,
-                        KomaPlaceAndPlaced.Value
-                    );
+                    bestScore = currentScore;
+                    bestMove = behavior.Value;
                 }
             }
 
-            Debug.Log(temp);
-            return new KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>>(
-                temp.Value.Koma.Score,
-                temp
-            );
+            Debug.Log(bestMove+""+bestScore);
+            return new KeyValuePair<int, Behavior>(bestMove.PlacedKoma.Koma.Score, bestMove);
+        }
+     private static List<List<Behavior>> GetAllWaysBehaviorFuture( this List<KomaInfo> KomaInfos,
+            int BoardSize,
+            Team CurrentTeam,
+            int Strength = 0)
+            {
+                List<List<Behavior>> result=new List<List<Behavior>>();
+
+  foreach (var behavior in KomaInfos.GetAllWaysBehavior(BoardSize, CurrentTeam))
+            {
+List<Behavior> behaviors=new List<Behavior>();
+behaviors.Add(behavior.Value);
+var nextBoard= KomaInfos.GetVirtualMoveBoard(behavior.Value,CurrentTeam);
+CurrentTeam=CurrentTeam.ReverseTeam();
+  foreach (var item in nextBoard.GetAllWaysBehavior(BoardSize, CurrentTeam))
+  {
+behaviors.Add(item.Value);
+  }
+
+
+     }
+
+     return null;
+            }
+
+public static  List<List<Behavior>> allBehavior;
+            public static List<Behavior> LoopBehavior( this List<KomaInfo> KomaInfos,
+            int BoardSize,  Team CurrentTeam,List<Behavior> behaviors,
+            int Strength = 0)
+            {
+                if (Strength==0)
+{
+    return behaviors;
+}
+
+  foreach (var behavior in KomaInfos.GetAllWaysBehavior(BoardSize, CurrentTeam))
+  {
+behaviors.Add(behavior.Value);
+Strength--;
+var nextBoard= KomaInfos.GetVirtualMoveBoard(behavior.Value,CurrentTeam);
+CurrentTeam=CurrentTeam.ReverseTeam();
+
+
+
+  }
+  return null;
+
+            }
+      
+
+   
+
+
+
+
+     private static List<KomaInfo> VirtualBoardChange(  List<KomaInfo> KomaInfos,
+            int BoardSize,
+            Team CurrentTeam,List<Behavior> behaviors)
+     {
+       List<KomaInfo> CurrentVBoard=new List<KomaInfo>();
+foreach (var item in behaviors)
+{
+    CurrentVBoard=KomaInfos.GetVirtualMoveBoard(item,CurrentTeam);
+    CurrentTeam=CurrentTeam.ReverseTeam();
+}
+return CurrentVBoard;
+     }
+
+
+        private static int CalculateScoreForBoard(
+            List<KomaInfo> KomaInfos,
+            int BoardSize,
+            Team CurrentTeam
+        )
+        {
+            int Score=0;
+               foreach (var behavior in KomaInfos.GetAllWaysBehavior(BoardSize, CurrentTeam))
+            {
+               Score+= behavior.Key;
+            }
+foreach (var item in KomaInfos.Where(x=>x.Team==CurrentTeam))
+{
+    Score+=item.Koma.Score;
+}
+          
+
+return Score;
         }
 
-        public static KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>> GetSeeFutureBehavior(
+        private static int CalculateScoreForBehavior(
+            List<KomaInfo> KomaInfos,
+            KeyValuePair<int, Behavior> behavior,
+            int BoardSize,
+            Team CurrentTeam,
+            int Strength
+        )
+        {
+            Team FirstTeam= CurrentTeam;
+            int score = 0;
+            List<KomaInfo> VirtualBoard = KomaInfos.ListCopy();
+            VirtualBoard = VirtualBoard.GetVirtualMoveBoard(behavior.Value, CurrentTeam);
+            var KomaPlaceAndPlaced = behavior.Value;
+            score += behavior.Key;
+
+            for (int i = 0; i <= Strength; i++)
+            { 
+                CurrentTeam = CurrentTeam.ReverseTeam();
+                var nextMove = VirtualBoard.GetMostBehavior(BoardSize, CurrentTeam, false);
+                score -= nextMove.Key*(FirstTeam==CurrentTeam?1:-1);
+                VirtualBoard = VirtualBoard.GetVirtualMoveBoard(nextMove.Value, CurrentTeam);
+            }
+
+            return score;
+        }
+
+        public static KeyValuePair<int, Behavior> GetSeeFutureBehavior(
             this List<KomaInfo> KomaInfos,
             int BoardSize,
             Team CurrentTeam
         )
         {
-            int TempScore = 100;
-            KeyValuePair<KomaInfo, KomaInfo> temp = new KeyValuePair<KomaInfo, KomaInfo>();
+            int bestScore = int.MinValue;
+            Behavior bestMove = default;
 
-            //ランダムに動かしたもの全パターンループ
-            foreach (
-                KeyValuePair<
-                    int,
-                    KeyValuePair<KomaInfo, KomaInfo>
-                > item in KomaInfos.GetAllWaysBehavior(BoardSize, CurrentTeam)
-            )
+            foreach (var behavior in KomaInfos.GetAllWaysBehavior(BoardSize, CurrentTeam))
             {
-                var KomaPlaceAndPlaced = item.Value;
+                var KomaPlaceAndPlaced = behavior.Value;
+                int currentScore = behavior.Key + KomaInfos.GetVirtualMoveBoard(KomaPlaceAndPlaced, CurrentTeam).GetMostBehavior(BoardSize, CurrentTeam, false).Key;
 
-                //自分のランダムに動かした時に取れる駒ランク
-                int BeforeScore = item.Key;
-                //実際にランダムに動かした盤面を取得
-
-                List<KomaInfo> firestBoard = KomaInfos.GetVirtualMoveBoard(
-                    KomaPlaceAndPlaced.Key,
-                    KomaPlaceAndPlaced.Value,
-                    CurrentTeam
-                );
-
-                //ランダムに動かした後の相手の最も取れる駒のランク
-                int NextScore = firestBoard.GetMostBehavior(BoardSize, CurrentTeam, false).Key;
-                Debug.Log("Next" + NextScore);
-
-                //差分をとる
-                int Score = BeforeScore + NextScore;
-
-                //最初のみ
-                if (TempScore == 100)
+                if (currentScore > bestScore)
                 {
-                    TempScore = Score;
-                    temp = new KeyValuePair<KomaInfo, KomaInfo>(
-                        KomaPlaceAndPlaced.Key,
-                        KomaPlaceAndPlaced.Value
-                    );
-                }
-                //次のループから
-                if (Score > TempScore)
-                {
-                    Debug.Log("Next" + NextScore);
-                    Debug.Log("Behore" + BeforeScore);
-                    TempScore = Score;
-                    temp = new KeyValuePair<KomaInfo, KomaInfo>(
-                        KomaPlaceAndPlaced.Key,
-                        KomaPlaceAndPlaced.Value
-                    );
+                    bestScore = currentScore;
+                    bestMove = behavior.Value;
                 }
             }
 
-            Debug.Log(temp);
-            return new KeyValuePair<int, KeyValuePair<KomaInfo, KomaInfo>>(TempScore, temp);
+            Debug.Log(bestMove);
+            return new KeyValuePair<int, Behavior>(bestScore, bestMove);
         }
     }
 }

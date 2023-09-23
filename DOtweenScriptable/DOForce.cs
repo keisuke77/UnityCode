@@ -1,7 +1,6 @@
 using UnityEngine;
 
 using DG.Tweening;
-
 public class DOForce : MonoBehaviour
 {
     [Header("吹っ飛び速度調整"),Range(0,100)]
@@ -16,17 +15,27 @@ public class DOForce : MonoBehaviour
 
     public EffectAndParticle HitEffect;
  [Range(0,1)]
-public float ReflectionForce;
+    public float ReflectionForce;
     public bool TweeningExecute;
   
     public void AddForce(GameObject Attacker, float Power)
     { Vector3 m_impact_vector=Vector3.one;
     if (Attacker)
     {
-           Attacker.ColliderDataInput(gameObject, ref m_impact_vector, Power);
+           ColliderDataInput(Attacker,gameObject, ref m_impact_vector, Power);
        AddForce(m_impact_vector,Power);
     }
        
+    }
+       public void ColliderDataInput(GameObject a_collider, GameObject a_object, ref Vector3 a_vector,float Power=30)
+    {
+        a_vector.Set(
+            a_object.transform.position.x - a_collider.transform.position.x,
+            0f,
+            a_object.transform.position.z - a_collider.transform.position.z
+        );
+        a_vector.Normalize();
+        a_vector*=Power;
     }
   
     public void AddForce(Vector3 impactVector, float Power)

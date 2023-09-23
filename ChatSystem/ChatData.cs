@@ -1,6 +1,8 @@
-using UnityEngine;using System.Collections;
+using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
- [System.Serializable]
+using UnityEngine.Events;
+[System.Serializable]
 public enum Emotion
 {
     Normal,Anger,Sad,Surprised
@@ -20,6 +22,19 @@ public enum Emotion
     public List<phase> phases;
     public string text;
     
+    }
+
+ [System.Serializable]
+    public class ChatDataAction
+    {
+        public ChatData chatData;
+        public UnityEvent EndEvent;
+public float StartDelayTime;
+
+      public void Play(){
+     
+              
+        }
     }
 [CreateAssetMenu(fileName = "RPG/ChatData", menuName = "New Unity Project (1)/ChatData", order = 0)]
 public class ChatData : ScriptableObject {

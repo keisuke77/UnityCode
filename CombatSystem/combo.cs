@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using UnityEngine;
-using Cysharp.Threading.Tasks;  // UniTaskのためのnamespaceを追加
+using UnityEngine; // UniTaskのためのnamespaceを追加
 
 public class combo : MonoBehaviour
 {
@@ -31,12 +30,12 @@ public float MPUseMount;
 public hpcore hpcore;
 
 public bool progressUseMp;
-    private async void Start()
+    void Start()
     {
         animator = GetComponent<Animator>();
             }
 
-    private async void Update()
+  void Update()
     {
          if (IsCooldownOver() && attackReserved)
     {
@@ -50,10 +49,10 @@ public bool progressUseMp;
           comboCount=0;
             lastDamageTime = Time.time; // ダメージを受けた時間を更新
         }
-        await HandleAttack();
+        HandleAttack();
     }
 
-    private async UniTask HandleAttack()
+    void HandleAttack()
     {
         if (isAttacking) return;
 
@@ -152,7 +151,7 @@ if (!mp.mpuse(MPUseMount))
 
 
 
-    private async void StartAttack(int attackLevel)
+     void StartAttack(int attackLevel)
     {
         isAttacking = true;
         lastAttackTime = Time.time;
@@ -160,6 +159,7 @@ if (!mp.mpuse(MPUseMount))
         if (attackLevel <= comboAnimations.Count)
         {
             animator.SetFloat("AnimSpeed", AnimSpeed);
+          
              animator.CrossFadeAnimation(comboAnimations[attackLevel - 1],CrossFadeSmoothLevel);
          }
 

@@ -12,7 +12,6 @@ public class ParticleCollider : effect
     public GameObject parentEffect;
     public bool jumpEffect = true;
     public bool death = false;
-    public Transform warpPos;
     public float explosionSpeed = 0;
     public bool objSpawn = false;
     public float effectPower = 200;
@@ -71,20 +70,13 @@ public class ParticleCollider : effect
         else if (other.proottag())
         {
             GameObject obj = other.root();
-            var unitycon = obj.GetComponent<UnityChanControlScriptWithRgidBody>();
-
-            if (parentEffect != null)
+               if (parentEffect != null)
             {
                 var e = Instantiate(parentEffect, other.gameObject.transform);
                 e.transform.parent = other.gameObject.transform;
             }
 
-            if (warpPos != null)
-            {
-                // Assuming keikei is a known class and PlayerEnterTransform is a static function in it.
-                keikei.PlayerEnterTransform(obj, warpPos);
-            }
-
+          
             if (playerHitObjSpawn)
             {
                 ObjSpawns(other);

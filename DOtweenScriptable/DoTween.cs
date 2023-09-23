@@ -17,20 +17,22 @@ public class DoTween : MonoBehaviour
       seq= DoTweenSeri.Play(transform);
     }  
    private void Awake() {
-        if (enablePlay)
-   {Play();
+    if (enablePlay&&!seq.IsActive())
+   {
+      Play();
       
    }
    }
 private void OnEnable() {
-   if (enablePlay)
-   {Play();
+   if (enablePlay&&!seq.IsActive())
+   {
+      Play();
       
    }
 }
 public void Pause(){
    
- seq.Pause();
+ seq.TogglePause();
 }
 public void ReStart(){
     // トゥイーンの再開

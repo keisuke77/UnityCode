@@ -3,19 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class ChatExecute : MonoBehaviour
+public class ChatExecute : Singleton<ChatExecute>
 {
     public ChatData ChatData;
     public message message;
     public bool Autostart;
-    public static ChatExecute instance;
     public int interval=2;
     
     System.Action EndCallBack;
     void Start()
     {
-        instance = this;
-        if (Autostart)
+          if (Autostart)
         {
             Play();
         }
